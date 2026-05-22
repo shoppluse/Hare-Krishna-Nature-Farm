@@ -6,9 +6,12 @@
     "category": "Grain",
     "tagline": "A foundational grain grown for temple cooking and daily prasadam seva.",
     "description": "Sacred Rice is one of the most vital crops grown across our acres. Cultivated naturally, it forms the core foundation of meals prepared within the temple kitchen, representing sustenance and pure ecosystem management.",
-    "price": "Nurtured with Devotion",
-    "rating": 4.8,
     "image": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=900&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1536631837803-58f385158a0a?auto=format&fit=crop&w=900&q=80"
+    ],
     "botanical": "Oryza sativa",
     "vernacular": "Chawal / Akki / Rice",
     "origin": "Southeast Asia",
@@ -21,42 +24,14 @@
     "category": "Fruit",
     "tagline": "A versatile fruit plant valued for nourishment, offering, and natural farm utility.",
     "description": "Grown in high-density sectors of our fields, these groves cycle active biomass resources across our soils while producing clean yields of nutrient-dense offerings year-round.",
-    "price": "Naturally Cultivated",
-    "rating": 4.5,
     "image": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=900&q=80",
+    "images": [
+      "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=900&q=80"
+    ],
     "botanical": "Musa acuminata",
     "vernacular": "Kela / Baale / Banana",
     "origin": "Indo-Malaysian Region",
     "medical": "Highly cooling configuration that pacifies Vata and Pitta conditions. The fully ripe fruit restores electrolytic structural integrity to systemic tissue, while green structures are utilized within traditional recipes as astringents to manage gut irritation."
-  },
-  {
-    "id": "3",
-    "number": "03",
-    "name": "Coconut Perennials",
-    "category": "Sacred Fruit",
-    "tagline": "An auspicious and sacred tree deeply valued in ritual, offering, and traditional farm life.",
-    "description": "Dotted symmetrically to safeguard border environments, these classic perennials deliver water, raw materials, and high-value fruit structural assets utilized across our daily operations.",
-    "price": "Pristine & Organic",
-    "rating": 4.9,
-    "image": "https://images.unsplash.com/photo-1615485925873-6f4f89cbb6d8?auto=format&fit=crop&w=900&q=80",
-    "botanical": "Cocos nucifera",
-    "vernacular": "Nariyal / Tenginakai / Coconut",
-    "origin": "Coastal Indo-Pacific Region",
-    "medical": "The endosperm and liquid matrix act as natural, sterile, cooling agents (Nariyal Udaka) which diminish burning sensations within urinary configurations and reduce internal heat stresses. Oil press outputs serve as foundations for neural configurations and dermis conditioning protocols."
-  },
-  {
-    "id": "4",
-    "number": "04",
-    "name": "Tulasi Garden Sanctuary",
-    "category": "Sacred Plant",
-    "tagline": "A most revered sacred plant, lovingly cared for as an essential part of devotional life.",
-    "description": "Protected inside specialized eco-zones across our site, this sacred sanctuary serves as the spiritual heart of the farm, requiring continuous, reverent attention.",
-    "price": "Devotional Care Only",
-    "rating": 5.0,
-    "image": "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=900&q=80",
-    "botanical": "Ocimum tenuiflorum",
-    "vernacular": "Tulsi / Holy Basil",
-    "origin": "Indian Subcontinent Region",
-    "medical": "An exceptional adaptogen class entity (Rasayana). Its warm, penetrating (Teekshna) nature eliminates excess Kapha and Vata accumulations within standard pulmonary pathways. Promotes adaptive immune response metrics and increases overall vitality."
   }
 ]
