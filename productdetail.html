@@ -252,7 +252,7 @@
         
         <div class="gallery-container">
           <div class="main-image-viewport">
-            <img id="viewMainImg" src="" alt="Main Image Preview">
+            <img id="viewMainImg" src="" alt="Main Image Preview" crossorigin="anonymous">
           </div>
           <div class="thumbnails-ribbon" id="thumbnailsRibbon"></div>
         </div>
@@ -330,16 +330,19 @@
   </div>
 
   <script>
-    // Bypasses CORS protection by dynamically shifting network graphics into Base64 formats
-    function convertToDataURL(url) {
-      return fetch(url)
-        .then(response => response.blob())
-        .then(blob => new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        })).catch(() => url); // Returns basic URL as fallback if fetch fails
+    // Local device snapshot engine: reads screen pixel values directly to avoid CORS issues
+    function getBase64FromRenderedImage(imgEl) {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = imgEl.naturalWidth || imgEl.width;
+        canvas.height = imgEl.naturalHeight || imgEl.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(imgEl, 0, 0);
+        return canvas.toDataURL("image/jpeg", 0.95);
+      } catch (e) {
+        console.warn("Direct canvas snapshot failed. Falling back to default URL stream.", e);
+        return imgEl.src;
+      }
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
@@ -359,7 +362,7 @@
         document.getElementById('loadingMessage').style.display = 'none';
         document.getElementById('profileWrapper').style.display = 'block';
 
-        // Load content fields into browser elements
+        // Load data strings straight into view
         document.getElementById('viewNumber').textContent = `Plant #${plant.number}`;
         document.getElementById('viewName').textContent = plant.name;
         document.getElementById('viewTagline').textContent = plant.tagline;
@@ -376,21 +379,17 @@
         mainImgView.src = imagesList[0];
         mainImgView.alt = plant.name;
 
-        // Populate standard first image to print canvas template directly
-        document.getElementById('pdfImage').src = imagesList[0];
-
-        // Build active gallery UI ribbon structures
+        // Populate thumbnail array strip items
         imagesList.forEach((imgUrl, loopIndex) => {
           const thumbElement = document.createElement('div');
           thumbElement.className = `thumb-item ${loopIndex === 0 ? 'active' : ''}`;
-          thumbElement.innerHTML = `<img src="${imgUrl}" alt="Gallery item mini">`;
+          thumbElement.innerHTML = `<img src="${imgUrl}" alt="Gallery Thumbnail">`;
           
           thumbElement.addEventListener('click', () => {
             mainImgView.style.opacity = '0.3';
             setTimeout(() => {
               mainImgView.src = imgUrl;
               mainImgView.style.opacity = '1';
-              document.getElementById('pdfImage').src = imgUrl;
             }, 150);
 
             document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
@@ -400,7 +399,7 @@
           ribbonContainer.appendChild(thumbElement);
         });
 
-        // Set up static text for PDF canvas layout data nodes
+        // Sync standard textual arrays into hidden PDF view blocks
         document.getElementById('pdfName').textContent = plant.name;
         document.getElementById('pdfNumber').textContent = `Profile Sheet Index: #${plant.number}`;
         document.getElementById('pdfBotanical').textContent = plant.botanical;
@@ -409,8 +408,8 @@
         document.getElementById('pdfDescription').textContent = plant.description;
         document.getElementById('pdfMedical').textContent = plant.medical;
 
-        // High-precision PDF rendering engine pipeline execution handler
-        document.getElementById('downloadPdfButton').addEventListener('click', async function() {
+        // PDF Generation Trigger
+        document.getElementById('downloadPdfButton').addEventListener('click', function() {
           const btn = this;
           const docTarget = document.getElementById('pdfPrintDocument');
           const pdfImgEl = document.getElementById('pdfImage');
@@ -418,19 +417,17 @@
           btn.disabled = true;
           btn.textContent = "Processing PDF Assets...";
 
-          // Securely encode the target active image to ensure rendering cross-pass safety
-          if(pdfImgEl.src && !pdfImgEl.src.startsWith('data:')) {
-            const secureDataUri = await convertToDataURL(pdfImgEl.src);
-            pdfImgEl.src = secureDataUri;
-          }
+          // Crucial fix: Grab raw onscreen data right from the gallery viewport
+          pdfImgEl.src = getBase64FromRenderedImage(mainImgView);
 
+          // Force view state presentation container active to record target canvas node
           docTarget.style.display = 'block';
 
           const engineConfiguration = {
             margin:       [15, 15, 15, 15],
             filename:     `${plant.name.replace(/\s+/g, '_')}_Botanical_DataSheet.pdf`,
             image:        { type: 'jpeg', quality: 1.0 },
-            html2canvas:  { scale: 2.5, useCORS: true, letterRendering: true, logging: false },
+            html2canvas:  { scale: 2.0, useCORS: true, letterRendering: true, logging: false },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
           };
 
