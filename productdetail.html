@@ -64,9 +64,10 @@
       font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, background 0.2s;
     }
     .btn-download:hover { transform: translateY(-2px); }
+    .btn-download:disabled { background: #555; color: #888; cursor: not-allowed; transform: none; }
 
     .profile-layout {
       display: grid;
@@ -253,8 +254,7 @@
           <div class="main-image-viewport">
             <img id="viewMainImg" src="" alt="Main Image Preview">
           </div>
-          <div class="thumbnails-ribbon" id="thumbnailsRibbon">
-            </div>
+          <div class="thumbnails-ribbon" id="thumbnailsRibbon"></div>
         </div>
       </div>
 
@@ -295,7 +295,7 @@
 
     <div style="display: flex; gap: 30px; margin-bottom: 30px; align-items: flex-start;">
       <div style="width: 40%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; background: #fafafa;">
-        <img id="pdfImage" src="" alt="PDF Plant Profile Preview" style="width: 100%; height: 100%; object-fit: cover;">
+        <img id="pdfImage" src="" alt="PDF Preview" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
       
       <table style="width: 60%; border-collapse: collapse; font-size: 13px;">
@@ -330,6 +330,18 @@
   </div>
 
   <script>
+    // Bypasses CORS protection by dynamically shifting network graphics into Base64 formats
+    function convertToDataURL(url) {
+      return fetch(url)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })).catch(() => url); // Returns basic URL as fallback if fetch fails
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const activeId = urlParams.get("id") || "1";
@@ -337,7 +349,6 @@
       try {
         const response = await fetch('products.json');
         const database = await response.json();
-        
         const plant = database.find(item => String(item.id) === String(activeId));
 
         if (!plant) {
@@ -348,48 +359,40 @@
         document.getElementById('loadingMessage').style.display = 'none';
         document.getElementById('profileWrapper').style.display = 'block';
 
-        // Bind Standard Text Content Fields
+        // Load content fields into browser elements
         document.getElementById('viewNumber').textContent = `Plant #${plant.number}`;
         document.getElementById('viewName').textContent = plant.name;
         document.getElementById('viewTagline').textContent = plant.tagline;
         document.getElementById('viewDescription').textContent = plant.description;
-        
         document.getElementById('viewBotanical').textContent = plant.botanical;
         document.getElementById('viewVernacular').textContent = plant.vernacular;
         document.getElementById('viewOrigin').textContent = plant.origin;
         document.getElementById('viewMedical').textContent = plant.medical;
 
-        // Initialize Image Gallery setup
         const mainImgView = document.getElementById('viewMainImg');
         const ribbonContainer = document.getElementById('thumbnailsRibbon');
-        
-        // Handle fallback if images array is absent
         const imagesList = (plant.images && plant.images.length > 0) ? plant.images : [plant.image];
         
-        // Set initial active viewing state target image
         mainImgView.src = imagesList[0];
         mainImgView.alt = plant.name;
 
         // Populate standard first image to print canvas template directly
         document.getElementById('pdfImage').src = imagesList[0];
 
-        // Generate Thumbnails dynamically
+        // Build active gallery UI ribbon structures
         imagesList.forEach((imgUrl, loopIndex) => {
           const thumbElement = document.createElement('div');
           thumbElement.className = `thumb-item ${loopIndex === 0 ? 'active' : ''}`;
-          thumbElement.innerHTML = `<img src="${imgUrl}" alt="Gallery item mini ${loopIndex}">`;
+          thumbElement.innerHTML = `<img src="${imgUrl}" alt="Gallery item mini">`;
           
           thumbElement.addEventListener('click', () => {
-            // Smoothly cross-fade image swap transition values 
             mainImgView.style.opacity = '0.3';
             setTimeout(() => {
               mainImgView.src = imgUrl;
               mainImgView.style.opacity = '1';
-              // Update print doc snapshot anchor to track your currently selected active image asset context
               document.getElementById('pdfImage').src = imgUrl;
             }, 150);
 
-            // Synchronize active stylistic border targets
             document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
             thumbElement.classList.add('active');
           });
@@ -397,7 +400,7 @@
           ribbonContainer.appendChild(thumbElement);
         });
 
-        // Map data arrays straight inside offscreen layout nodes for clean document output printing passes
+        // Set up static text for PDF canvas layout data nodes
         document.getElementById('pdfName').textContent = plant.name;
         document.getElementById('pdfNumber').textContent = `Profile Sheet Index: #${plant.number}`;
         document.getElementById('pdfBotanical').textContent = plant.botanical;
@@ -406,9 +409,21 @@
         document.getElementById('pdfDescription').textContent = plant.description;
         document.getElementById('pdfMedical').textContent = plant.medical;
 
-        // Attach layout compile printing handles
-        document.getElementById('downloadPdfButton').addEventListener('click', () => {
+        // High-precision PDF rendering engine pipeline execution handler
+        document.getElementById('downloadPdfButton').addEventListener('click', async function() {
+          const btn = this;
           const docTarget = document.getElementById('pdfPrintDocument');
+          const pdfImgEl = document.getElementById('pdfImage');
+
+          btn.disabled = true;
+          btn.textContent = "Processing PDF Assets...";
+
+          // Securely encode the target active image to ensure rendering cross-pass safety
+          if(pdfImgEl.src && !pdfImgEl.src.startsWith('data:')) {
+            const secureDataUri = await convertToDataURL(pdfImgEl.src);
+            pdfImgEl.src = secureDataUri;
+          }
+
           docTarget.style.display = 'block';
 
           const engineConfiguration = {
@@ -421,6 +436,8 @@
 
           html2pdf().set(engineConfiguration).from(docTarget).save().then(() => {
             docTarget.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = "Download Medical Data PDF";
           });
         });
 
