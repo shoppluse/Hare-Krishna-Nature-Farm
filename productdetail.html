@@ -30,7 +30,7 @@
       background: linear-gradient(180deg, #07180d 0%, #0a1f11 40%, #0d2414 100%);
       color: var(--text);
       min-height: 100vh;
-      padding: 40px var(--pad);
+      padding: 40px min(4%, 40px);
     }
 
     .container {
@@ -38,12 +38,12 @@
       margin: 0 auto;
     }
 
-    /* ===== BACK CONTROLS LINK ===== */
     .action-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
+      gap: 15px;
     }
 
     .btn-back {
@@ -52,9 +52,6 @@
       font-family: var(--font-display);
       font-weight: 700;
       font-size: 0.95rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .btn-download {
@@ -71,7 +68,6 @@
     }
     .btn-download:hover { transform: translateY(-2px); }
 
-    /* ===== MAIN GRID CONTENT INTERFACE ===== */
     .profile-layout {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
@@ -117,16 +113,69 @@
       font-size: 1rem;
     }
 
-    .profile-media img {
+    /* ===== GALLERY LAYOUT SYSTEM ===== */
+    .gallery-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .main-image-viewport {
       width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
       box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-      aspect-ratio: 1;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .main-image-viewport img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+
+    .thumbnails-ribbon {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .thumbnails-ribbon::-webkit-scrollbar {
+      height: 4px;
+    }
+    .thumbnails-ribbon::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+
+    .thumb-item {
+      width: 80px;
+      height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      opacity: 0.6;
+      transition: all 0.2s ease;
+    }
+
+    .thumb-item:hover, .thumb-item.active {
+      opacity: 1;
+      border-color: var(--accent);
+      transform: scale(1.03);
+    }
+
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
 
-    /* ===== TAXONOMY FIELDS DESIGN PANEL ===== */
     .taxonomy-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -178,7 +227,6 @@
       line-height: 1.8;
     }
 
-    /* ===== PDF OFF-SCREEN LAYOUT REPOSITORY ===== */
     .pdf-hidden-layout { display: none; }
   </style>
 </head>
@@ -186,7 +234,7 @@
 
   <div class="container">
     <div class="action-row">
-      <a href="index.html" class="btn-back">← Back to Grid Catalog</a>
+      <a href="index.html#plants" class="btn-back">← Back to Plant Collection</a>
       <button class="btn-download" id="downloadPdfButton">Download Medical Data PDF</button>
     </div>
 
@@ -200,8 +248,13 @@
           <div class="tagline" id="viewTagline">—</div>
           <p class="desc-text" id="viewDescription">—</p>
         </div>
-        <div class="profile-media">
-          <img id="viewImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Plant Blueprint">
+        
+        <div class="gallery-container">
+          <div class="main-image-viewport">
+            <img id="viewMainImg" src="" alt="Main Image Preview">
+          </div>
+          <div class="thumbnails-ribbon" id="thumbnailsRibbon">
+            </div>
         </div>
       </div>
 
@@ -227,10 +280,10 @@
     </div>
   </div>
 
-  <div id="pdfPrintDocument" class="pdf-hidden-layout" style="padding: 50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; background: #ffffff;">
-    <div style="border-bottom: 3px solid #0d2414; padding-bottom: 20px; margin-bottom: 35px; display: flex; justify-content: space-between; align-items: flex-end;">
+  <div id="pdfPrintDocument" class="pdf-hidden-layout" style="padding: 40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; background: #ffffff;">
+    <div style="border-bottom: 3px solid #0d2414; padding-bottom: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
       <div>
-        <h1 style="font-size: 28px; font-weight: bold; color: #0d2414; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;" id="pdfName">Plant Profile Documentation</h1>
+        <h1 style="font-size: 26px; font-weight: bold; color: #0d2414; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;" id="pdfName">Plant Profile Documentation</h1>
         <p style="font-size: 13px; color: #555; margin: 6px 0 0 0; font-weight: 500;" id="pdfNumber">Taxonomy Data Index Sheet</p>
       </div>
       <div style="text-align: right; font-size: 11px; color: #666; line-height: 1.5; font-weight: 500;">
@@ -240,39 +293,44 @@
       </div>
     </div>
 
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px; font-size: 14px;">
-      <tr>
-        <td style="padding: 14px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414; width: 35%;">Botanical Name of Tree Specie:</td>
-        <td style="padding: 14px; border: 1px solid #dcdcdc; font-style: italic; font-size: 15px; color: #222;" id="pdfBotanical">—</td>
-      </tr>
-      <tr>
-        <td style="padding: 14px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414;">Vernacular Name of Tree Specie:</td>
-        <td style="padding: 14px; border: 1px solid #dcdcdc; font-size: 15px; color: #222;" id="pdfVernacular">—</td>
-      </tr>
-      <tr>
-        <td style="padding: 14px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414;">Centre of Origin of Tree Specie:</td>
-        <td style="padding: 14px; border: 1px solid #dcdcdc; font-size: 15px; color: #222;" id="pdfOrigin">—</td>
-      </tr>
-    </table>
-
-    <div style="margin-bottom: 35px;">
-      <h3 style="font-size: 16px; color: #0d2414; text-transform: uppercase; border-bottom: 2px solid #0d2414; padding-bottom: 6px; margin-bottom: 12px; letter-spacing: 0.3px;">Cultivation & Purpose Context</h3>
-      <p style="font-size: 14px; line-height: 1.65; color: #333; text-align: justify;" id="pdfDescription">—</p>
+    <div style="display: flex; gap: 30px; margin-bottom: 30px; align-items: flex-start;">
+      <div style="width: 40%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; background: #fafafa;">
+        <img id="pdfImage" src="" alt="PDF Plant Profile Preview" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      
+      <table style="width: 60%; border-collapse: collapse; font-size: 13px;">
+        <tr>
+          <td style="padding: 10px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414; width: 45%;">Botanical Name:</td>
+          <td style="padding: 10px; border: 1px solid #dcdcdc; font-style: italic; color: #222;" id="pdfBotanical">—</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414;">Vernacular Name:</td>
+          <td style="padding: 10px; border: 1px solid #dcdcdc; color: #222;" id="pdfVernacular">—</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414;">Centre of Origin:</td>
+          <td style="padding: 10px; border: 1px solid #dcdcdc; color: #222;" id="pdfOrigin">—</td>
+        </tr>
+      </table>
     </div>
 
-    <div style="margin-bottom: 40px;">
-      <h3 style="font-size: 16px; color: #0d2414; text-transform: uppercase; border-bottom: 2px solid #0d2414; padding-bottom: 6px; margin-bottom: 12px; letter-spacing: 0.3px;">Ayurvedic / Medical Significance</h3>
-      <p style="font-size: 14px; line-height: 1.7; color: #333; text-align: justify; background: #fafafa; padding: 20px; border-left: 4px solid #0d2414; border-radius: 4px;" id="pdfMedical">—</p>
+    <div style="margin-bottom: 25px;">
+      <h3 style="font-size: 15px; color: #0d2414; text-transform: uppercase; border-bottom: 2px solid #0d2414; padding-bottom: 6px; margin-bottom: 10px; letter-spacing: 0.3px;">Cultivation & Purpose Context</h3>
+      <p style="font-size: 13px; line-height: 1.6; color: #333; text-align: justify;" id="pdfDescription">—</p>
     </div>
 
-    <div style="margin-top: 80px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 11px; color: #888; font-weight: 500;">
-      This record sheet holds true botanical identification metrics recorded at Hare Krishna Nature Farm. Natural distribution documentation parameters apply.
+    <div style="margin-bottom: 30px;">
+      <h3 style="font-size: 15px; color: #0d2414; text-transform: uppercase; border-bottom: 2px solid #0d2414; padding-bottom: 6px; margin-bottom: 10px; letter-spacing: 0.3px;">Ayurvedic / Medical Significance</h3>
+      <p style="font-size: 13px; line-height: 1.6; color: #333; text-align: justify; background: #fafafa; padding: 15px; border-left: 4px solid #0d2414; border-radius: 4px;" id="pdfMedical">—</p>
+    </div>
+
+    <div style="margin-top: 50px; padding-top: 15px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 11px; color: #888; font-weight: 500;">
+      This record sheet holds true botanical identification metrics recorded at Hare Krishna Nature Farm.
     </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      // Extract profile key parameter
       const urlParams = new URLSearchParams(window.location.search);
       const activeId = urlParams.get("id") || "1";
 
@@ -280,32 +338,66 @@
         const response = await fetch('products.json');
         const database = await response.json();
         
-        // Find matching item record
         const plant = database.find(item => String(item.id) === String(activeId));
 
         if (!plant) {
-          document.getElementById('loadingMessage').innerHTML = `<p style="color:red; font-weight:bold;">Profile target out of bounds.</p>`;
+          document.getElementById('loadingMessage').innerHTML = `<p style="color:red; font-weight:bold;">Profile target not found.</p>`;
           return;
         }
 
-        // Drop loading view and reveal components
         document.getElementById('loadingMessage').style.display = 'none';
         document.getElementById('profileWrapper').style.display = 'block';
 
-        // Bind data parameters to dynamic screen layouts
+        // Bind Standard Text Content Fields
         document.getElementById('viewNumber').textContent = `Plant #${plant.number}`;
         document.getElementById('viewName').textContent = plant.name;
         document.getElementById('viewTagline').textContent = plant.tagline;
         document.getElementById('viewDescription').textContent = plant.description;
-        document.getElementById('viewImage').src = plant.image;
-        document.getElementById('viewImage').alt = plant.name;
         
         document.getElementById('viewBotanical').textContent = plant.botanical;
         document.getElementById('viewVernacular').textContent = plant.vernacular;
         document.getElementById('viewOrigin').textContent = plant.origin;
         document.getElementById('viewMedical').textContent = plant.medical;
 
-        // Populate hidden PDF canvas document node parameters
+        // Initialize Image Gallery setup
+        const mainImgView = document.getElementById('viewMainImg');
+        const ribbonContainer = document.getElementById('thumbnailsRibbon');
+        
+        // Handle fallback if images array is absent
+        const imagesList = (plant.images && plant.images.length > 0) ? plant.images : [plant.image];
+        
+        // Set initial active viewing state target image
+        mainImgView.src = imagesList[0];
+        mainImgView.alt = plant.name;
+
+        // Populate standard first image to print canvas template directly
+        document.getElementById('pdfImage').src = imagesList[0];
+
+        // Generate Thumbnails dynamically
+        imagesList.forEach((imgUrl, loopIndex) => {
+          const thumbElement = document.createElement('div');
+          thumbElement.className = `thumb-item ${loopIndex === 0 ? 'active' : ''}`;
+          thumbElement.innerHTML = `<img src="${imgUrl}" alt="Gallery item mini ${loopIndex}">`;
+          
+          thumbElement.addEventListener('click', () => {
+            // Smoothly cross-fade image swap transition values 
+            mainImgView.style.opacity = '0.3';
+            setTimeout(() => {
+              mainImgView.src = imgUrl;
+              mainImgView.style.opacity = '1';
+              // Update print doc snapshot anchor to track your currently selected active image asset context
+              document.getElementById('pdfImage').src = imgUrl;
+            }, 150);
+
+            // Synchronize active stylistic border targets
+            document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+            thumbElement.classList.add('active');
+          });
+          
+          ribbonContainer.appendChild(thumbElement);
+        });
+
+        // Map data arrays straight inside offscreen layout nodes for clean document output printing passes
         document.getElementById('pdfName').textContent = plant.name;
         document.getElementById('pdfNumber').textContent = `Profile Sheet Index: #${plant.number}`;
         document.getElementById('pdfBotanical').textContent = plant.botanical;
@@ -314,15 +406,13 @@
         document.getElementById('pdfDescription').textContent = plant.description;
         document.getElementById('pdfMedical').textContent = plant.medical;
 
-        // Attach print action handle logic
+        // Attach layout compile printing handles
         document.getElementById('downloadPdfButton').addEventListener('click', () => {
           const docTarget = document.getElementById('pdfPrintDocument');
-          
-          // Switch target structure display visibility to force accurate rendering snapshot
           docTarget.style.display = 'block';
 
           const engineConfiguration = {
-            margin:       [15, 20, 15, 20],
+            margin:       [15, 15, 15, 15],
             filename:     `${plant.name.replace(/\s+/g, '_')}_Botanical_DataSheet.pdf`,
             image:        { type: 'jpeg', quality: 1.0 },
             html2canvas:  { scale: 2.5, useCORS: true, letterRendering: true, logging: false },
@@ -330,13 +420,12 @@
           };
 
           html2pdf().set(engineConfiguration).from(docTarget).save().then(() => {
-            // Restore hidden property layout immediately upon canvas stream execution completion pass
             docTarget.style.display = 'none';
           });
         });
 
       } catch (err) {
-        document.getElementById('loadingMessage').innerHTML = `<p style="color:red; font-weight:bold;">Failed to stream data data source channel parameters.</p>`;
+        document.getElementById('loadingMessage').innerHTML = `<p style="color:red; font-weight:bold;">Failed to stream data channel matrices.</p>`;
       }
     });
   </script>
