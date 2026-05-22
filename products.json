@@ -36,5 +36,75 @@
   "vernacular": "Brazilian Mulberry",
   "origin": "Western Asia (Persia)",
   "medical": "Rich in Vitamin C, minerals, dietary fiber, and water content with low calories and moderate sugar. Contains phytochemicals with antioxidant and anti-inflammatory properties. Leaf compounds may help inhibit digestive enzymes."
+},
+  {
+  "id": "dimocarpus-didyma",
+  "number": "003",
+  "name": "Dimocarpus didyma",
+  "category": "Tropical Fruit",
+  "tagline": "A rare tropical fruit tree known for its lychee-like fruits and antioxidant-rich nutritional value.",
+  "description": "Dimocarpus didyma, commonly known as Wild Lychee, is a tropical fruit tree native to regions of the Philippines, Indonesia, Thailand, and Malaysia. The tree produces edible fruits similar to lychee and is valued for its nutritional richness and traditional significance. The fruits contain Vitamin C, potassium, copper, and antioxidant compounds that help support overall health and wellness.",
+  "image": "https://plain-apac-prod-public.komododecks.com/202605/22/7u2oDMSO2U8Vw1SgigGj/image.jpg",
+  "images": [
+    "https://plain-apac-prod-public.komododecks.com/202605/22/B1WSaCkCSRRRzfuSgoQu/image.webp",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/Jv2iwt3jnmHUB1BEOOF3/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/esogNzqHUH29Bue10u9n/image.jpg"
+  ],
+  "botanical": "Dimocarpus didyma",
+  "vernacular": "Wild Lychee",
+  "origin": "Philippines, Indonesia, Thailand, Malaysia",
+  "medical": "Rich in Vitamin C, potassium, copper, and antioxidants such as epicatechin and rutin. These compounds support immune health, cardiovascular protection, and antioxidant defense."
+},
+  {
+  "id": "garcinia-mangostana-var-mesta",
+  "number": "004",
+  "name": "Garcinia mangostana var. Mesta",
+  "category": "Tropical Fruit",
+  "tagline": "A premium mangosteen variety celebrated for its rich flavor and powerful antioxidant properties.",
+  "description": "Garcinia mangostana var. Mesta, commonly known as Mangosteen, is a highly valued tropical fruit variety originating from Southeast Asia, particularly Malaysia. Known for its sweet, juicy flesh and deep purple rind, this fruit is prized for both its taste and medicinal significance. It contains rich bioactive compounds and antioxidants that support overall wellness and traditional health practices.",
+  "image": "https://plain-apac-prod-public.komododecks.com/202605/22/Q5QkQYNrXaBcg9hUcrvY/image.jpg",
+  "images": [
+    "https://plain-apac-prod-public.komododecks.com/202605/22/Q5QkQYNrXaBcg9hUcrvY/image.jpg"
+  ],
+  "botanical": "Garcinia mangostana var. Mesta",
+  "vernacular": "Mangosteen",
+  "origin": "Southeast Asia, particularly Malaysia",
+  "medical": "Rich in xanthones with antioxidant, anti-inflammatory, and antimicrobial activity. Contains bioactive compounds beneficial for immune support, cardiovascular health, and metabolic regulation."
+},
+  {
+  "id": "ziziphus-mauritiana",
+  "number": "005",
+  "name": "Ziziphus mauritiana",
+  "category": "Tropical Fruit",
+  "tagline": "A hardy and nutritious fruit tree valued for its refreshing fruits and traditional medicinal uses.",
+  "description": "Ziziphus mauritiana, commonly known as Red Ber Apple, is a tropical fruit tree widely cultivated across South Asia, especially in India, Pakistan, and Southeast Asia. The tree produces sweet and tangy fruits that are enjoyed fresh and valued for their nutritional richness. Traditionally, the fruit has been appreciated for supporting digestion, immunity, and overall wellness through its natural vitamins and antioxidants.",
+  "image": "https://plain-apac-prod-public.komododecks.com/202605/22/on5vsM3EFzmI0vxhI5IC/image.jpg",
+  "images": [
+    "https://plain-apac-prod-public.komododecks.com/202605/22/40yBEwdzuwKH7AXfLNbc/image.png",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/y4pGQrOzjHdwcBKZKiGS/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/J4Jb02PUNdbFzeHusyyi/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/6NHkZSHDcr9TSjDc0aPN/image.jpg"
+  ],
+  "botanical": "Ziziphus mauritiana",
+  "vernacular": "Red Ber Apple",
+  "origin": "South Asia, especially India, Pakistan, Southeast Asia",
+  "medical": "A good source of Vitamin C, dietary fiber, and antioxidants. Traditionally associated with anti-inflammatory properties, digestive support, and strengthening immune function."
+},
+  {
+  "id": "mangifera-indica-kolambu-mango",
+  "number": "006",
+  "name": "Mangifera indica",
+  "category": "Tropical Fruit",
+  "tagline": "A traditional mango variety cherished for its rich flavor, nutrition, and cultural significance.",
+  "description": "Mangifera indica, commonly known as Kolambu Mango, is a traditional mango variety associated with the Jaffna region of Sri Lanka and parts of Kerala. The fruit is appreciated for its delicious taste, aromatic quality, and nutritional richness. It contains essential vitamins, minerals, fiber, and antioxidants that contribute to overall wellness and traditional dietary practices.",
+  "image": "https://plain-apac-prod-public.komododecks.com/202605/22/XMT9kdM72YuYhiWdH9jp/image.jpg",
+  "images": [
+    "https://plain-apac-prod-public.komododecks.com/202605/22/KZV9YWDtx5uzoTbUBRVr/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/AlK80mTkXtNiiHJCUBGD/image.webp"
+  ],
+  "botanical": "Mangifera indica",
+  "vernacular": "Kolambu Mango",
+  "origin": "Sri Lanka (Jaffna region), Kerala",
+  "medical": "Rich in Vitamins A and C, dietary fiber, minerals, and antioxidants. Traditionally associated with digestive support and maintaining healthy blood pressure."
 }
 ]
