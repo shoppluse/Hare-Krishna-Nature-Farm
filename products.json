@@ -18,21 +18,23 @@
   "origin": "Tropical Southeast Asia, Malaysia, Indonesia, Thailand",
   "medical": "Antioxidant-rich, digestive aid, anti-inflammatory properties. Folk medicine reports topical use for minor swelling or skin issues."
 },
-  {
-    "id": "2",
-    "number": "02",
-    "name": "Banana Grove",
-    "category": "Fruit",
-    "tagline": "A versatile fruit plant valued for nourishment, offering, and natural farm utility.",
-    "description": "Grown in high-density sectors of our fields, these groves cycle active biomass resources across our soils while producing clean yields of nutrient-dense offerings year-round.",
-    "image": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=900&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=900&q=80"
-    ],
-    "botanical": "Musa acuminata",
-    "vernacular": "Kela / Baale / Banana",
-    "origin": "Indo-Malaysian Region",
-    "medical": "Highly cooling configuration that pacifies Vata and Pitta conditions. The fully ripe fruit restores electrolytic structural integrity to systemic tissue, while green structures are utilized within traditional recipes as astringents to manage gut irritation."
-  }
+{
+  "id": "morus-nigra",
+  "number": "002",
+  "name": "Morus nigra",
+  "category": "Tropical Fruit",
+  "tagline": "A nutrient-rich mulberry tree valued for its sweet fruits and traditional medicinal benefits.",
+  "description": "Morus nigra, commonly known as Brazilian Mulberry or Black Mulberry, is a fruit-bearing tree originally native to Western Asia, especially Persia. The tree produces dark, sweet berries that are rich in Vitamin C, minerals, dietary fiber, and water content, making them nutritious and refreshing. Traditionally, different parts of the plant, especially the leaves, have been valued for their antioxidant, anti-inflammatory, and digestive-supporting properties.",
+  "image": "https://plain-apac-prod-public.komododecks.com/202605/22/QzSQVTO6y5gZ8OcwSdaT/image.jpg",
+  "images": [
+    "https://plain-apac-prod-public.komododecks.com/202605/22/2dQHvxw2mjXYWTD3LLkw/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/VpxWYBMSAcUnfB3iXBKD/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/BuiEJSdvK82nE4jP6rBt/image.jpg",
+    "https://plain-apac-prod-public.komododecks.com/202605/22/GLpz5TrXSU3kWJKIAIr1/image.jpg"
+  ],
+  "botanical": "Morus nigra",
+  "vernacular": "Brazilian Mulberry",
+  "origin": "Western Asia (Persia)",
+  "medical": "Rich in Vitamin C, minerals, dietary fiber, and water content with low calories and moderate sugar. Contains phytochemicals with antioxidant and anti-inflammatory properties. Leaf compounds may help inhibit digestive enzymes."
+}
 ]
