@@ -1,678 +1,344 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plant Details | ISKCON FARM HOUSE</title>
-
-  <!-- PWA / Installable (kept, but SW disabled temporarily) -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0b1f10" />
-  <link rel="icon" href="icon-192.png" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <title>Plant Details | Botanical Database</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
-    :root{
-      --bg-dark: #07180d;
-      --bg-dark-2: #0d2414;
-      --bg-card: rgba(255,255,255,0.06);
-      --primary: #c9ef47;
-      --primary-dark: #a8d62d;
-      --text-light: #f5f7f2;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg: #07180d;
+      --bg-2: #0d2414;
+      --surface: rgba(255, 255, 255, 0.06);
+      --text: #f5f7f2;
       --text-soft: #d0dacb;
-      --text-muted: #9fb09c;
-      --border: rgba(255,255,255,0.12);
-      --shadow: 0 20px 50px rgba(0,0,0,0.25);
-      --radius: 18px;
-      --transition: all 0.35s ease;
-      --max-width: 1280px;
+      --muted: #9fb09c;
+      --accent: #c9ef47;
+      --border: rgba(255, 255, 255, 0.12);
+      --radius-md: 22px;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
     }
 
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:'Inter',sans-serif;
-      background:linear-gradient(180deg,#07180d 0%,#0a1f11 40%,#0d2414 100%);
-      color:var(--text-light);
-      overflow-x:hidden;
-    }
-    a{text-decoration:none;color:inherit}
-    img{max-width:100%;display:block}
-    .container{width:min(92%,var(--max-width));margin:0 auto}
-    .card{
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      backdrop-filter:blur(14px);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(180deg, #07180d 0%, #0a1f11 40%, #0d2414 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px var(--pad);
     }
 
-    header{
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(7,24,13,0.88);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    .container {
+      width: min(92%, 1200px);
+      margin: 0 auto;
     }
 
-    .navbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      padding:16px 0;
+    /* ===== BACK CONTROLS LINK ===== */
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
     }
 
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-family:'Poppins',sans-serif;
-      font-weight:800;
-      font-size:1.1rem;
-      color:white;
-      flex-wrap: wrap;
+    .btn-back {
+      text-decoration: none;
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .logo-icon{
-      width:44px;
-      height:44px;
-      border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #e5ff7a, #9fc922 70%);
-      display:grid;
-      place-items:center;
-      color:#17320c;
-      box-shadow:0 8px 25px rgba(201,239,71,0.25);
-      font-size:1.2rem;
+    .btn-download {
+      background: var(--accent);
+      color: #122006;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn-download:hover { transform: translateY(-2px); }
+
+    /* ===== MAIN GRID CONTENT INTERFACE ===== */
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      margin-bottom: 40px;
     }
 
-    .logo span{color:var(--primary)}
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:13px 20px;
-      border-radius:14px;
-      font-weight:700;
-      font-size:.95rem;
-      border:1px solid transparent;
-      transition:var(--transition);
-      cursor:pointer;
+    @media (max-width: 900px) {
+      .profile-layout { grid-template-columns: 1fr; }
     }
 
-    .btn-primary{
-      background:var(--primary);
-      color:#122006;
-      box-shadow:0 12px 30px rgba(201,239,71,0.18);
+    .plant-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(201, 239, 71, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(201, 239, 71, 0.2);
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      font-family: var(--font-display);
     }
 
-    .btn-primary:hover{
-      transform:translateY(-4px);
-      background:var(--primary-dark);
+    .profile-info h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 12px;
     }
 
-    section{
-      padding: 40px 0 90px;
+    .tagline {
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 20px;
     }
 
-    .hero{
-      padding-top: 40px;
+    .desc-text {
+      color: var(--text-soft);
+      line-height: 1.8;
+      font-size: 1rem;
     }
 
-    .hero-wrap{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:28px;
-      align-items:center;
+    .profile-media img {
+      width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      aspect-ratio: 1;
+      object-fit: cover;
     }
 
-    .plant-badge{
-      display:inline-block;
-      padding:8px 14px;
-      background:rgba(201,239,71,0.12);
-      color:var(--primary);
-      border:1px solid rgba(201,239,71,0.18);
-      border-radius:999px;
-      font-size:.82rem;
-      font-weight:700;
-      margin-bottom:16px;
+    /* ===== TAXONOMY FIELDS DESIGN PANEL ===== */
+    .taxonomy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+    }
+    @media (max-width: 600px) {
+       .taxonomy-grid { grid-template-columns: 1fr; }
     }
 
-    .hero h1{
-      font-family:'Poppins',sans-serif;
-      font-size:clamp(2.2rem,5vw,4.5rem);
-      line-height:1.05;
-      margin-bottom:12px;
+    .tax-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px;
+      border-radius: 16px;
     }
 
-    .tagline{
-      color:var(--primary);
-      font-weight:700;
-      margin-bottom:18px;
-      font-size:1rem;
+    .tax-card h4 {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
     }
 
-    .hero p{
-      color:var(--text-soft);
-      line-height:1.8;
-      font-size:1rem;
+    .tax-card p {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
     }
 
-    .hero-image{
-      overflow:hidden;
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,0.08);
-      box-shadow:var(--shadow);
+    .significance-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 30px;
+      margin-top: 30px;
     }
 
-    .hero-image img{
-      width:100%;
-      height:100%;
-      min-height:380px;
-      object-fit:cover;
+    .significance-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: var(--accent);
     }
 
-    .quick-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:20px;
-      margin-top:32px;
+    .significance-card p {
+      color: var(--text-soft);
+      line-height: 1.8;
     }
 
-    .quick-card{
-      padding:22px;
-    }
-
-    .quick-card h4{
-      color:var(--text-muted);
-      font-size:.9rem;
-      margin-bottom:8px;
-    }
-
-    .quick-card p{
-      font-weight:700;
-      font-size:1rem;
-      color:var(--text-light);
-    }
-
-    .section-title{
-      font-family:'Poppins',sans-serif;
-      font-size:clamp(1.8rem,4vw,2.8rem);
-      margin-bottom:14px;
-    }
-
-    .section-title span{color:var(--primary)}
-
-    .section-subtitle{
-      color:var(--text-soft);
-      line-height:1.8;
-      margin-bottom:30px;
-    }
-
-    .content-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:28px;
-      margin-top:50px;
-    }
-
-    .content-card{
-      padding:28px;
-    }
-
-    .content-card h3{
-      font-family:'Poppins',sans-serif;
-      font-size:1.3rem;
-      margin-bottom:14px;
-    }
-
-    .content-card p{
-      color:var(--text-soft);
-      line-height:1.85;
-    }
-
-    .list{
-      display:grid;
-      gap:12px;
-      margin-top:16px;
-      list-style: none;
-    }
-
-    .list li{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      color:var(--text-soft);
-      line-height:1.7;
-    }
-
-    .list i{
-      color:var(--primary);
-      margin-top:4px;
-    }
-
-    .related{
-      margin-top:50px;
-    }
-
-    .related-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:20px;
-      margin-top:24px;
-    }
-
-    .related-card{
-      display:block;
-      overflow:hidden;
-      transition:var(--transition);
-    }
-
-    .related-card:hover{
-      transform:translateY(-8px);
-      border-color:rgba(201,239,71,0.22);
-    }
-
-    .related-card img{
-      width:100%;
-      height:220px;
-      object-fit:cover;
-    }
-
-    .related-content{
-      padding:18px;
-    }
-
-    .related-content h4{
-      font-family:'Poppins',sans-serif;
-      margin-bottom:8px;
-    }
-
-    .related-content p{
-      color:var(--text-soft);
-      font-size:.92rem;
-      line-height:1.7;
-    }
-
-    footer{
-      padding:24px 0;
-      border-top:1px solid rgba(255,255,255,0.06);
-      background:rgba(0,0,0,0.12);
-      color:var(--text-soft);
-      text-align:center;
-    }
-
-    @media (max-width: 1000px){
-      .hero-wrap,
-      .content-grid{
-        grid-template-columns:1fr;
-      }
-
-      .quick-grid{
-        grid-template-columns:repeat(2,1fr);
-      }
-
-      .related-grid{
-        grid-template-columns:1fr 1fr;
-      }
-    }
-
-    @media (max-width: 768px){
-      .quick-grid,
-      .related-grid{
-        grid-template-columns:1fr;
-      }
-
-      .hero-image img{
-        min-height:280px;
-      }
-
-      .navbar{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-    }
+    /* ===== PDF OFF-SCREEN LAYOUT REPOSITORY ===== */
+    .pdf-hidden-layout { display: none; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="container navbar">
-      <a href="index.html" class="logo">
-        <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-        Hare Krishna <span>Nature Farm</span>
-      </a>
-
-      <a href="index.html#plants" class="btn btn-primary">
-        <i class="fa-solid fa-arrow-left"></i> Back to Plant Collection
-      </a>
+  <div class="container">
+    <div class="action-row">
+      <a href="index.html" class="btn-back">← Back to Grid Catalog</a>
+      <button class="btn-download" id="downloadPdfButton">Download Medical Data PDF</button>
     </div>
-  </header>
 
-  <section class="hero">
-    <div class="container">
-      <div class="hero-wrap">
-        <div>
-          <div class="plant-badge" id="plantCategory">Sacred Plant</div>
-          <h1 id="plantName">Plant Name</h1>
-          <div class="tagline" id="plantTagline">A sacred and purposeful plant grown for Krishna seva.</div>
-          <p id="plantDescription">
-            Loading plant details...
-          </p>
+    <div id="loadingMessage" style="text-align: center; padding: 40px; color: var(--muted);">Resolving data mapping matrix...</div>
+    
+    <div id="profileWrapper" style="display:none;">
+      <div class="profile-layout">
+        <div class="profile-info">
+          <div class="plant-badge" id="viewNumber">Plant #—</div>
+          <h1 id="viewName">—</h1>
+          <div class="tagline" id="viewTagline">—</div>
+          <p class="desc-text" id="viewDescription">—</p>
         </div>
-
-        <div class="hero-image">
-          <img id="plantImage" src="" alt="Plant Image">
+        <div class="profile-media">
+          <img id="viewImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Plant Blueprint">
         </div>
       </div>
 
-      <div class="quick-grid">
-        <div class="card quick-card">
-          <h4>Scientific Name</h4>
-          <p id="plantScientific">—</p>
+      <div class="taxonomy-grid">
+        <div class="tax-card">
+          <h4>Botanical Name of Tree Specie</h4>
+          <p id="viewBotanical" style="font-style: italic;">—</p>
         </div>
-        <div class="card quick-card">
-          <h4>Main Temple Use</h4>
-          <p id="plantUse">—</p>
+        <div class="tax-card">
+          <h4>Vernacular Name of Tree Specie</h4>
+          <p id="viewVernacular">—</p>
         </div>
-        <div class="card quick-card">
-          <h4>Farm Category</h4>
-          <p id="plantFarmCategory">—</p>
-        </div>
-      </div>
-
-      <div class="content-grid">
-        <div class="card content-card">
-          <h3>Spiritual Significance</h3>
-          <p id="plantSpiritual"></p>
-        </div>
-
-        <div class="card content-card">
-          <h3>Temple / Farm Purpose</h3>
-          <ul class="list" id="plantPurposeList"></ul>
-        </div>
-
-        <div class="card content-card">
-          <h3>Benefits</h3>
-          <ul class="list" id="plantBenefitsList"></ul>
-        </div>
-
-        <div class="card content-card">
-          <h3>Cultivation Details</h3>
-          <ul class="list" id="plantCultivationList"></ul>
+        <div class="tax-card">
+          <h4>Centre of Origin of Tree Specie</h4>
+          <p id="viewOrigin">—</p>
         </div>
       </div>
 
-      <div class="related">
-        <h2 class="section-title">Explore <span>More Plants</span></h2>
-        <p class="section-subtitle">Discover other sacred and useful plants grown across the 108-acre farm.</p>
-
-        <div class="related-grid" id="relatedGrid"></div>
+      <div class="significance-card">
+        <h3>Ayurvedic / Medical Significance</h3>
+        <p id="viewMedical">—</p>
       </div>
     </div>
-  </section>
+  </div>
 
-  <footer>
-    © <span id="year"></span> ISKCON FARM HOUSE — Hare Krishna Nature Farm
-  </footer>
+  <div id="pdfPrintDocument" class="pdf-hidden-layout" style="padding: 50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a; background: #ffffff;">
+    <div style="border-bottom: 3px solid #0d2414; padding-bottom: 20px; margin-bottom: 35px; display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <h1 style="font-size: 28px; font-weight: bold; color: #0d2414; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;" id="pdfName">Plant Profile Documentation</h1>
+        <p style="font-size: 13px; color: #555; margin: 6px 0 0 0; font-weight: 500;" id="pdfNumber">Taxonomy Data Index Sheet</p>
+      </div>
+      <div style="text-align: right; font-size: 11px; color: #666; line-height: 1.5; font-weight: 500;">
+        🌿 <strong>HARE KRISHNA NATURE FARM</strong><br>
+        Botanical Research Department<br>
+        Survey No. 411, Mahadevpura, India
+      </div>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px; font-size: 14px;">
+      <tr>
+        <td style="padding: 14px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414; width: 35%;">Botanical Name of Tree Specie:</td>
+        <td style="padding: 14px; border: 1px solid #dcdcdc; font-style: italic; font-size: 15px; color: #222;" id="pdfBotanical">—</td>
+      </tr>
+      <tr>
+        <td style="padding: 14px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414;">Vernacular Name of Tree Specie:</td>
+        <td style="padding: 14px; border: 1px solid #dcdcdc; font-size: 15px; color: #222;" id="pdfVernacular">—</td>
+      </tr>
+      <tr>
+        <td style="padding: 14px; border: 1px solid #dcdcdc; background: #f7f9f6; font-weight: bold; color: #0d2414;">Centre of Origin of Tree Specie:</td>
+        <td style="padding: 14px; border: 1px solid #dcdcdc; font-size: 15px; color: #222;" id="pdfOrigin">—</td>
+      </tr>
+    </table>
+
+    <div style="margin-bottom: 35px;">
+      <h3 style="font-size: 16px; color: #0d2414; text-transform: uppercase; border-bottom: 2px solid #0d2414; padding-bottom: 6px; margin-bottom: 12px; letter-spacing: 0.3px;">Cultivation & Purpose Context</h3>
+      <p style="font-size: 14px; line-height: 1.65; color: #333; text-align: justify;" id="pdfDescription">—</p>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <h3 style="font-size: 16px; color: #0d2414; text-transform: uppercase; border-bottom: 2px solid #0d2414; padding-bottom: 6px; margin-bottom: 12px; letter-spacing: 0.3px;">Ayurvedic / Medical Significance</h3>
+      <p style="font-size: 14px; line-height: 1.7; color: #333; text-align: justify; background: #fafafa; padding: 20px; border-left: 4px solid #0d2414; border-radius: 4px;" id="pdfMedical">—</p>
+    </div>
+
+    <div style="margin-top: 80px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; font-size: 11px; color: #888; font-weight: 500;">
+      This record sheet holds true botanical identification metrics recorded at Hare Krishna Nature Farm. Natural distribution documentation parameters apply.
+    </div>
+  </div>
 
   <script>
-    // REMOVE OLD SERVICE WORKERS + CACHE (VERY IMPORTANT FIX)
-    (function () {
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.getRegistrations().then((registrations) => {
-          registrations.forEach((registration) => registration.unregister());
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Extract profile key parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const activeId = urlParams.get("id") || "1";
+
+      try {
+        const response = await fetch('products.json');
+        const database = await response.json();
+        
+        // Find matching item record
+        const plant = database.find(item => String(item.id) === String(activeId));
+
+        if (!plant) {
+          document.getElementById('loadingMessage').innerHTML = `<p style="color:red; font-weight:bold;">Profile target out of bounds.</p>`;
+          return;
+        }
+
+        // Drop loading view and reveal components
+        document.getElementById('loadingMessage').style.display = 'none';
+        document.getElementById('profileWrapper').style.display = 'block';
+
+        // Bind data parameters to dynamic screen layouts
+        document.getElementById('viewNumber').textContent = `Plant #${plant.number}`;
+        document.getElementById('viewName').textContent = plant.name;
+        document.getElementById('viewTagline').textContent = plant.tagline;
+        document.getElementById('viewDescription').textContent = plant.description;
+        document.getElementById('viewImage').src = plant.image;
+        document.getElementById('viewImage').alt = plant.name;
+        
+        document.getElementById('viewBotanical').textContent = plant.botanical;
+        document.getElementById('viewVernacular').textContent = plant.vernacular;
+        document.getElementById('viewOrigin').textContent = plant.origin;
+        document.getElementById('viewMedical').textContent = plant.medical;
+
+        // Populate hidden PDF canvas document node parameters
+        document.getElementById('pdfName').textContent = plant.name;
+        document.getElementById('pdfNumber').textContent = `Profile Sheet Index: #${plant.number}`;
+        document.getElementById('pdfBotanical').textContent = plant.botanical;
+        document.getElementById('pdfVernacular').textContent = plant.vernacular;
+        document.getElementById('pdfOrigin').textContent = plant.origin;
+        document.getElementById('pdfDescription').textContent = plant.description;
+        document.getElementById('pdfMedical').textContent = plant.medical;
+
+        // Attach print action handle logic
+        document.getElementById('downloadPdfButton').addEventListener('click', () => {
+          const docTarget = document.getElementById('pdfPrintDocument');
+          
+          // Switch target structure display visibility to force accurate rendering snapshot
+          docTarget.style.display = 'block';
+
+          const engineConfiguration = {
+            margin:       [15, 20, 15, 20],
+            filename:     `${plant.name.replace(/\s+/g, '_')}_Botanical_DataSheet.pdf`,
+            image:        { type: 'jpeg', quality: 1.0 },
+            html2canvas:  { scale: 2.5, useCORS: true, letterRendering: true, logging: false },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          html2pdf().set(engineConfiguration).from(docTarget).save().then(() => {
+            // Restore hidden property layout immediately upon canvas stream execution completion pass
+            docTarget.style.display = 'none';
+          });
         });
+
+      } catch (err) {
+        document.getElementById('loadingMessage').innerHTML = `<p style="color:red; font-weight:bold;">Failed to stream data data source channel parameters.</p>`;
       }
-
-      if ("caches" in window) {
-        caches.keys().then((names) => {
-          names.forEach((name) => caches.delete(name));
-        });
-      }
-    })();
-
-    const plants = {
-      rice: {
-        name: "Sacred Rice",
-        category: "Grain",
-        tagline: "A foundational grain grown for temple cooking and daily prasadam seva.",
-        description: "Sacred Rice is one of the most important crops grown on the farm. It is cultivated using natural methods and serves as a staple ingredient in temple cooking. The grain is valued for purity, nourishment, and its central role in preparing sanctified meals offered to Lord Krishna and distributed as prasadam to devotees and visitors.",
-        image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=1200&q=80",
-        scientific: "Oryza sativa",
-        use: "Temple cooking & prasadam",
-        farmCategory: "Grain Cultivation",
-        spiritual: "Rice is deeply connected with nourishment and sacred offering traditions. On the farm, it is grown with care and gratitude, then used in preparations that become sanctified through offering to Krishna. It represents both physical sustenance and devotional service.",
-        purpose: [
-          "Used in daily temple cooking preparations",
-          "Supports free prasadam distribution for visitors",
-          "Serves as a key grain in sacred offerings"
-        ],
-        benefits: [
-          "Nutritious staple food for temple meals",
-          "Supports large-scale prasadam preparation",
-          "Traditionally important in devotional cooking"
-        ],
-        cultivation: [
-          "Soil: Fertile, water-retentive soil",
-          "Water: Regular irrigation required",
-          "Sunlight: Full sun exposure",
-          "Season: Monsoon and seasonal cycles"
-        ]
-      },
-
-      banana: {
-        name: "Banana Grove",
-        category: "Fruit",
-        tagline: "A versatile fruit plant valued for nourishment, offering, and natural farm utility.",
-        description: "Banana Grove includes a collection of banana plants cultivated for their fruits, leaves, and ecological value. Bananas are highly useful in traditional devotional settings and can support both offerings and prasadam. Their leaves also carry traditional significance in serving food and farm utility.",
-        image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=1200&q=80",
-        scientific: "Musa spp.",
-        use: "Offerings, prasadam & leaf utility",
-        farmCategory: "Fruit Plantation",
-        spiritual: "Banana is a generous plant that offers fruit, shade, and traditional utility. In devotional culture, it is often associated with simplicity, nourishment, and sacred hospitality. Its usefulness makes it especially valued in temple-supporting agriculture.",
-        purpose: [
-          "Fruits used in offerings to Lord Krishna",
-          "Bananas used in prasadam and devotional meals",
-          "Leaves can support traditional serving practices"
-        ],
-        benefits: [
-          "Nutritious and naturally energizing fruit",
-          "Multi-purpose plant with high farm value",
-          "Provides shade and supports green farm diversity"
-        ],
-        cultivation: [
-          "Soil: Rich, well-drained organic soil",
-          "Water: Moderate to high water requirement",
-          "Sunlight: Full sun to partial sun",
-          "Season: Grows well in warm tropical climate"
-        ]
-      },
-
-      coconut: {
-        name: "Coconut Trees",
-        category: "Sacred Fruit",
-        tagline: "An auspicious and sacred tree deeply valued in ritual, offering, and traditional farm life.",
-        description: "Coconut Trees are among the most respected and useful trees on the farm. Coconuts are used in temple offerings, ceremonial practices, and traditional cooking. The tree itself represents abundance and sacred utility, making it highly meaningful in spiritual agriculture.",
-        image: "https://images.unsplash.com/photo-1615485925873-6f4f89cbb6d8?auto=format&fit=crop&w=1200&q=80",
-        scientific: "Cocos nucifera",
-        use: "Deity offerings & ceremonial use",
-        farmCategory: "Sacred Tree Cultivation",
-        spiritual: "Coconut is considered auspicious in many sacred traditions and is often present in offerings and rituals. On the farm, it symbolizes purity, abundance, and the offering of nature’s best in the service of Krishna.",
-        purpose: [
-          "Used in sacred temple offerings",
-          "Supports ceremonial and devotional activities",
-          "Provides ingredients for traditional preparations"
-        ],
-        benefits: [
-          "Nutritious fruit with many culinary uses",
-          "Highly respected in ritual traditions",
-          "Long-living tree with strong ecological value"
-        ],
-        cultivation: [
-          "Soil: Sandy or well-drained fertile soil",
-          "Water: Moderate regular watering",
-          "Sunlight: Full sunlight required",
-          "Season: Tropical year-round growth"
-        ]
-      },
-
-      vegetables: {
-        name: "Seasonal Vegetables",
-        category: "Vegetables",
-        tagline: "Fresh and naturally grown produce that nourishes temple life and prasadam distribution.",
-        description: "Seasonal Vegetables include a wide variety of crops such as leafy greens, gourds, roots, and other fresh produce grown across different sections of the farm. These vegetables are cultivated naturally and support healthy cooking for devotees, temple guests, and daily prasadam distribution.",
-        image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80",
-        scientific: "Various species",
-        use: "Temple kitchen & prasadam",
-        farmCategory: "Vegetable Cultivation",
-        spiritual: "Fresh vegetables grown with devotion become part of the sacred food cycle of the temple. When cultivated, cooked, and offered properly, they support both bodily nourishment and spiritual upliftment through prasadam.",
-        purpose: [
-          "Daily use in temple kitchen preparations",
-          "Supports balanced prasadam meals",
-          "Provides variety in offerings and cooking"
-        ],
-        benefits: [
-          "Rich in nutrients and freshness",
-          "Supports healthy meals for visitors",
-          "Enhances self-sufficiency of the farm ecosystem"
-        ],
-        cultivation: [
-          "Soil: Rich organic soil with compost",
-          "Water: Depends on seasonal crop type",
-          "Sunlight: Mostly full sun",
-          "Season: Seasonal crop rotation across the year"
-        ]
-      },
-
-      flowers: {
-        name: "Deity Flowers",
-        category: "Flowers",
-        tagline: "Beautiful blossoms cultivated for garlands, altar decoration, and daily worship.",
-        description: "Deity Flowers include sacred and fragrant blooms such as marigold, rose, jasmine, and other seasonal varieties. These flowers are grown especially for garlands, altar decoration, and devotional offerings. Their beauty enhances the temple atmosphere and supports intimate daily seva.",
-        image: "https://images.unsplash.com/photo-1592841200221-9f9c88d8b0d5?auto=format&fit=crop&w=1200&q=80",
-        scientific: "Various flowering species",
-        use: "Garlands & deity decoration",
-        farmCategory: "Flower Cultivation",
-        spiritual: "Flowers are a direct expression of beauty offered back to Krishna. They are among the most intimate items in deity worship, used to decorate the altar, create garlands, and beautify the temple environment with fragrance and devotion.",
-        purpose: [
-          "Used in daily garland making",
-          "Supports altar decoration and worship",
-          "Enhances temple beauty and devotional mood"
-        ],
-        benefits: [
-          "Creates sacred visual beauty in the temple",
-          "Provides fragrance and devotional atmosphere",
-          "Supports daily worship practices"
-        ],
-        cultivation: [
-          "Soil: Loose fertile flower beds",
-          "Water: Regular but balanced watering",
-          "Sunlight: Good sunlight for blooming",
-          "Season: Multiple seasonal flowering cycles"
-        ]
-      },
-
-      tulasi: {
-        name: "Tulasi Garden",
-        category: "Sacred Plant",
-        tagline: "A most revered sacred plant, lovingly cared for as an essential part of devotional life.",
-        description: "Tulasi Maharani holds a uniquely sacred place in devotional life. The Tulasi Garden on the farm is maintained with great care and reverence. Tulasi leaves are essential in offerings to Lord Krishna, and her presence sanctifies the environment. More than a plant, Tulasi is honored as a deeply worshipable and spiritually significant presence.",
-        image: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=1200&q=80",
-        scientific: "Ocimum tenuiflorum",
-        use: "Worship & sacred offering",
-        farmCategory: "Sacred Plant Care",
-        spiritual: "Tulasi Maharani is central to Krishna bhakti and is honored with devotion. Her leaves are offered to Krishna daily, and her presence is cherished in temple and devotional spaces. Caring for Tulasi is itself considered a form of sacred service.",
-        purpose: [
-          "Leaves offered daily to Lord Krishna",
-          "Maintained as a sacred devotional plant",
-          "Supports worship and spiritual atmosphere"
-        ],
-        benefits: [
-          "Deep spiritual significance in bhakti",
-          "Purifies and sanctifies devotional spaces",
-          "Traditionally respected for herbal value"
-        ],
-        cultivation: [
-          "Soil: Well-drained light soil",
-          "Water: Moderate, careful watering",
-          "Sunlight: Good sunlight with gentle care",
-          "Season: Thrives with regular devotional maintenance"
-        ]
-      }
-    };
-
-    const relatedMap = {
-      rice: ["banana", "vegetables", "tulasi"],
-      banana: ["rice", "coconut", "flowers"],
-      coconut: ["banana", "flowers", "tulasi"],
-      vegetables: ["rice", "banana", "flowers"],
-      flowers: ["tulasi", "coconut", "banana"],
-      tulasi: ["flowers", "rice", "coconut"]
-    };
-
-    const plantKey = new URLSearchParams(window.location.search).get("plant") || "rice";
-    const plant = plants[plantKey] || plants.rice;
-
-    document.title = `${plant.name} | ISKCON FARM HOUSE`;
-    document.getElementById("plantCategory").textContent = plant.category;
-    document.getElementById("plantName").textContent = plant.name;
-    document.getElementById("plantTagline").textContent = plant.tagline;
-    document.getElementById("plantDescription").textContent = plant.description;
-    document.getElementById("plantImage").src = plant.image;
-    document.getElementById("plantImage").alt = plant.name;
-    document.getElementById("plantScientific").textContent = plant.scientific;
-    document.getElementById("plantUse").textContent = plant.use;
-    document.getElementById("plantFarmCategory").textContent = plant.farmCategory;
-    document.getElementById("plantSpiritual").textContent = plant.spiritual;
-
-    const purposeList = document.getElementById("plantPurposeList");
-    plant.purpose.forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>${item}</span>`;
-      purposeList.appendChild(li);
     });
-
-    const benefitsList = document.getElementById("plantBenefitsList");
-    plant.benefits.forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = `<i class="fa-solid fa-leaf"></i><span>${item}</span>`;
-      benefitsList.appendChild(li);
-    });
-
-    const cultivationList = document.getElementById("plantCultivationList");
-    plant.cultivation.forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = `<i class="fa-solid fa-seedling"></i><span>${item}</span>`;
-      cultivationList.appendChild(li);
-    });
-
-    const relatedGrid = document.getElementById("relatedGrid");
-    (relatedMap[plantKey] || ["rice","banana","tulasi"]).forEach(key => {
-      const item = plants[key];
-      const card = document.createElement("a");
-      card.href = `productdetail.html?plant=${key}`;
-      card.className = "card related-card";
-      card.innerHTML = `
-        <img src="${item.image}" alt="${item.name}">
-        <div class="related-content">
-          <h4>${item.name}</h4>
-          <p>${item.tagline}</p>
-        </div>
-      `;
-      relatedGrid.appendChild(card);
-    });
-
-    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
