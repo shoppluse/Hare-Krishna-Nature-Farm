@@ -1,22 +1,23 @@
 [
-  {
-    "id": "1",
-    "number": "01",
-    "name": "Sacred Rice Field",
-    "category": "Grain",
-    "tagline": "A foundational grain grown for temple cooking and daily prasadam seva.",
-    "description": "Sacred Rice is one of the most vital crops grown across our acres. Cultivated naturally, it forms the core foundation of meals prepared within the temple kitchen, representing sustenance and pure ecosystem management.",
-    "image": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=900&q=80",
-    "images": [
-      "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1536631837803-58f385158a0a?auto=format&fit=crop&w=900&q=80"
-    ],
-    "botanical": "Oryza sativa",
-    "vernacular": "Chawal / Akki / Rice",
-    "origin": "Southeast Asia",
-    "medical": "Provides clean complex carbohydrates that stabilize digestion. In Ayurvedic tradition, red and brown husked variations are processed into gruels (Kanji) to optimize metabolic energy (Agni), balance Pitta profiles, and offer easily assimilable elements during recovery cycles."
-  },
+{
+  "id": "baccaurea-macrocarpa",
+  "number": "001",
+  "name": "Baccaurea macrocarpa",
+  "category": "Tropical Fruit",
+  "tagline": "A rare tropical rainforest fruit tree valued for its nutritious and medicinal fruit.",
+  "description": "Baccaurea macrocarpa, commonly known as Tampoi, is a tropical fruit tree native to Southeast Asia. It is widely found in regions of Malaysia, Indonesia, and Thailand. The tree produces edible antioxidant-rich fruits that are appreciated for their sweet and slightly tangy taste. Traditionally, different parts of the plant have been used in folk medicine for digestive support and for minor skin-related conditions.",
+  "image": "https://i.ibb.co/0j9nq6mB/jkSZQ8gQ.jpg",
+  "images": [
+    "https://i.ibb.co/7xQjR4zQ/5xzhq18W.jpg",
+    "https://i.ibb.co/ZR7Gm4T7/wZSh16jc.jpg",
+    "https://i.ibb.co/7tJ2XgM8/mVVxNFRn.jpg",
+    "https://i.ibb.co/9H3rR4rS/S4cYs57L.jpg"
+  ],
+  "botanical": "Baccaurea macrocarpa",
+  "vernacular": "Tampoi",
+  "origin": "Tropical Southeast Asia, Malaysia, Indonesia, Thailand",
+  "medical": "Antioxidant-rich, digestive aid, anti-inflammatory properties. Folk medicine reports topical use for minor swelling or skin issues."
+},
   {
     "id": "2",
     "number": "02",
