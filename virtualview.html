@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual View Tour | ISKCON Farm House</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <style>
+    :root {
+      --bg-dark: #07180d;
+      --bg-dark-2: #0d2414;
+      --primary: #c9ef47;
+      --primary-dark: #a8d62d;
+      --text-light: #f5f7f2;
+      --text-soft: #d0dacb;
+      --border: rgba(255,255,255,0.12);
+      --radius: 18px;
+      --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ===== TOUR MANAGER WRAPPER ===== */
+    .view-manager {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      perspective: 1200px;
+    }
+
+    /* ===== BACK CONTROL LINK ===== */
+    .tour-overlay-controls {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      z-index: 100;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(9, 25, 14, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+    .btn-action:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* ===== STAGE 1: SATELLITE MAP OVERVIEW ===== */
+    .map-perspective-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      transform-style: preserve-3d;
+    }
+
+    /* Realistic Satellite Terrain Simulation using your uploaded coordinates coordinates background map placement */
+    .map-canvas-base {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524661135339-9140b00787e3?auto=format&fit=crop&w=2000&q=90') center/cover no-repeat;
+      transition: var(--transition);
+      transform: scale(1.0);
+    }
+
+    /* Zoom Transition Trigger Utility States */
+    .view-manager.zoomed-in .map-perspective-container {
+      transform: translateZ(600px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ===== HOTSPOT INTERACTIVE MARKERS ===== */
+    .map-marker-pulse {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 rgba(201, 239, 71, 0.7);
+      animation: pulseEffect 2s infinite;
+      transition: transform 0.3s;
+    }
+    .map-marker-pulse:hover {
+      transform: translate(-50%, -50%) scale(1.3);
+      background: #fff;
+    }
+
+    @keyframes pulseEffect {
+      0% { box-shadow: 0 0 0 0 rgba(201, 239, 71, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(201, 239, 71, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(201, 239, 71, 0); }
+    }
+
+    /* Marker Data Tooltips */
+    .marker-label-card {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0d2414;
+      border: 1px solid var(--primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      white-space: nowrap;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      pointer-events: none;
+      box-shadow: var(--shadow);
+    }
+
+    /* Marker Positioning Coordinate Points matching your uploaded layout layout exactly */
+    #spot1 { top: 38%; left: 32%; } /* ISKCON Temple Site Center Point */
+    #spot2 { top: 58%; left: 52%; } /* Akshaya Patra Infrastructure Node */
+    #spot3 { top: 12%; left: 45%; } /* Kaveri River Flow Boundary */
+    #spot4 { top: 72%; left: 28%; } /* Organic Cultivation Fields Nursery */
+    #spot5 { top: 48%; left: 75%; } /* Sacred Goshala Dairy Sector */
+
+    /* ===== STAGE 2: 360 PANORAMIC SCREEN VIEWPORT ===== */
+    .panorama-viewport-wrapper {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.1);
+      transition: var(--transition);
+      background: #000;
+    }
+
+    .view-manager.zoomed-in .panorama-viewport-wrapper {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1.0);
+    }
+
+    /* Immersive infinite slow scrolling panoramic canvas backdrop layer wrapper */
+    .panoramic-render-strip {
+      width: 200%;
+      height: 100%;
+      background-size: cover;
+      background-repeat: repeat-x;
+      background-position: center;
+      animation: infinitePanoRotate 40s linear infinite;
+    }
+
+    @keyframes infinitePanoRotate {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Dynamic Content Description Banner HUD Card */
+    .hud-info-banner {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(90%, 550px);
+      background: rgba(7, 24, 13, 0.85);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: var(--radius);
+      backdrop-filter: blur(15px);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .hud-info-banner h2 {
+      font-family: 'Poppins', sans-serif;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .hud-info-banner p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-soft);
+    }
+
+    .audio-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .audio-bar {
+      width: 3px; height: 12px; background: var(--primary);
+      animation: audioWave 1.2s ease-in-out infinite alternate;
+    }
+    .audio-bar:nth-child(2) { animation-delay: 0.2s; }
+    .audio-bar:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes audioWave {
+      0% { height: 4px; }
+      100% { height: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="view-manager" id="viewManager">
+    
+    <div class="tour-overlay-controls">
+      <a href="index.html" class="btn-action"><i class="fa-solid fa-house"></i> Return Home</a>
+      <button class="btn-action" id="exitPanoBtn" style="display: none;"><i class="fa-solid fa-minimize"></i> Return to Top View</button>
+    </div>
+
+    <div class="map-perspective-container">
+      <div class="map-canvas-base">
+        
+        <div class="map-marker-pulse" id="spot1" onclick="engageZoom('spot1')">
+          <div class="marker-label-card">ISKCON Krishna Balaram Temple</div>
+        </div>
+
+        <div class="map-marker-pulse" id="spot2" onclick="engageZoom('spot2')">
+          <div class="marker-label-card">The Akshaya Patra Foundation</div>
+        </div>
+
+        <div class="map-marker-pulse" id="spot3" onclick="engageZoom('spot3')">
+          <div class="marker-label-card">Kaveri River Front</div>
+        </div>
+
+        <div class="map-marker-pulse" id="spot4" onclick="engageZoom('spot4')">
+          <div class="marker-label-card">Organic Agriculture Nursery</div>
+        </div>
+
+        <div class="map-marker-pulse" id="spot5" onclick="engageZoom('spot5')">
+          <div class="marker-label-card">Sacred Devotional Goshala</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="panorama-viewport-wrapper" id="panoViewport">
+      <div class="panoramic-render-strip" id="panoStrip"></div>
+      
+      <div class="hud-info-banner">
+        <h2 id="hudTitle">Location</h2>
+        <p id="hudDescription">Immersive tour description goes here...</p>
+        <div class="audio-indicator">
+          <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+          <span>Playing Spiritual Atmosphere Audio</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 360 Panoramic Scene Node Repositories Data
+    const tourDatabase = {
+      spot1: {
+        title: "ISKCON Krishna Balaram Temple",
+        description: "Experience the profound spiritual atmosphere of the central altar. Echoes of dynamic kirtan, Vedic mantras, and delicate aromas of incense fill the space, providing a serene refuge for complete meditation.",
+        bgImage: "https://images.unsplash.com/photo-1609137144813-7d84860b411d?auto=format&fit=crop&w=2400&q=80"
+      },
+      spot2: {
+        title: "The Akshaya Patra Foundation Kitchen",
+        description: "The massive, highly optimized humanitarian service center processing sanctified crops harvested from our organic acreage into fresh meals distributed daily to thousands.",
+        bgImage: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=2400&q=80"
+      },
+      spot3: {
+        title: "Kaveri River Bank Corridor",
+        description: "The sacred water boundary tracing along our northern border, continuously carrying refreshing river breezes across the fields and supplying life to the topsoil layer structures.",
+        bgImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2400&q=80"
+      },
+      spot4: {
+        title: "Organic Agriculture Nursery",
+        description: "Our core cultivation site where zero-chemical bio-fertilizers nurture ancient grains, flowers, and medicinal tree species from seeds before field dispersion.",
+        bgImage: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=2400&q=80"
+      },
+      spot5: {
+        title: "Sacred Devotional Goshala",
+        description: "Our center for cow protection, caring for cattle in a peaceful environment that provides pure organic dairy products for temple deity worship.",
+        bgImage: "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=2400&q=80"
+      }
+    };
+
+    const manager = document.getElementById("viewManager");
+    const exitBtn = document.getElementById("exitPanoBtn");
+    const panoStrip = document.getElementById("panoStrip");
+    const hudTitle = document.getElementById("hudTitle");
+    const hudDesc = document.getElementById("hudDescription");
+
+    // Execute transform scaling zooms and shift viewport to immersive pano rendering space
+    function engageZoom(locationKey) {
+      const data = tourDatabase[locationKey];
+      if(!data) return;
+
+      // Populate content into overlay elements
+      hudTitle.textContent = data.title;
+      hudDesc.textContent = data.description;
+      panoStrip.style.backgroundImage = `url('${data.bgImage}')`;
+
+      // Set class state to trigger CSS zoom and display transitions
+      manager.classList.add("zoomed-in");
+      exitBtn.style.display = "inline-flex";
+    }
+
+    // Return view space to baseline map state parameters
+    function reverseZoom() {
+      manager.classList.remove("zoomed-in");
+      exitBtn.style.display = "none";
+    }
+
+    exitBtn.addEventListener("click", reverseZoom);
+  </script>
+</body>
+</html>
