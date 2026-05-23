@@ -363,16 +363,15 @@
       hudDesc.textContent = data.description;
 
       // Determine asset format type and load the correct layout engine
-      if(data.type === "video") {
-        mediaArea.style.backgroundImage = "none";
-        mediaArea.innerHTML = `
-          <iframe class="video-tour-iframe" 
-                  src="${data.videoUrl}" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  allowfullscreen>
-          </iframe>`;
-        audioHUD.style.visibility = "hidden"; // Hide music indicator since video track plays natively
-      } else {
+if(data.type === "local-video") {
+  mediaArea.style.backgroundImage = "none";
+  mediaArea.innerHTML = `
+    <video class="video-tour-iframe" style="object-fit: cover;" autoplay loop muted controls>
+      <source src="${data.videoUrl}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>`;
+  audioHUD.style.visibility = "hidden";
+} else {
         mediaArea.innerHTML = "";
         mediaArea.style.backgroundImage = `url('${data.imageUrl}')`;
         audioHUD.style.visibility = "visible";
